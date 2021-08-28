@@ -6,9 +6,8 @@ import fcntl
 import time
 import copy
 import string
-from AtlasI2C import (
-	 AtlasI2C
-)
+
+from AtlasI2C import (AtlasI2C)
 
 from awscrt import io, mqtt, auth, http
 from awsiot import mqtt_connection_builder
@@ -18,12 +17,12 @@ import json
 
 read_delay = 1
 
-def print_devices(device_list):
+def print_sensors(device_list):
     for dev in device_list:
         print(" - " + dev.get_device_info())
 
 
-def get_devices():
+def get_sensors():
     device = AtlasI2C()
     device_list = []
     for i in device.list_i2c_devices():
@@ -36,7 +35,7 @@ def get_devices():
     return device_list 
 
 
-def connect():
+def connect_to_mqtt():
     event_loop_group = io.EventLoopGroup(1)
     host_resolver = io.DefaultHostResolver(event_loop_group)
     client_bootstrap = io.ClientBootstrap(event_loop_group, host_resolver)
@@ -61,17 +60,17 @@ def connect():
     return mqtt_connection
 
 
-def disconnect(mqtt_connection):
+def disconnect_from_mqtt(mqtt_connection):
     print("Disconnecting...")
     disconnect_future = mqtt_connection.disconnect()
     disconnect_future.result()
     print("Disconnected!")
 
 
-def read(mqtt_connection):
+def read_sensors(mqtt_connection):
     try:
-        device_list = get_devices()
-        print_devices(device_list)
+        device_list = get_sensors()
+        print_sensors(device_list)
         for dev in device_list:
             dev.write("R")
         time.sleep(read_delay)
@@ -91,13 +90,13 @@ def read(mqtt_connection):
         print('Error:')
         print(e)
         print('Retrying..')
-        read(mqtt_connection)
+        read_seansors(mqtt_connection)
 
 
 def main():
-    mqtt_connection = connect()
-    read(mqtt_connection)
-    disconnect(mqtt_connection)
+    mqtt_connection = connect_to_mqtt()
+    read_sensors(mqtt_connection)
+    disconnect_from_mqtt(mqtt_connection)
         
                     
 if __name__ == '__main__':
