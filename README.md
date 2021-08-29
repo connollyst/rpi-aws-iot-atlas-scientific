@@ -3,12 +3,14 @@
 ## Installation
 
 ### Install the OS:
+
 - Open Raspberry Pi Imager
 - Select OS Lite & burn
 - Eject & reinsert SD card
-- Write empty file called ‘ssh’ to the root of the ‘boot’ partition.
-- Write a text file called ‘wpa_supplicant.conf’ with:
-``
+- Write empty file called `ssh` to the root of the `boot` partition.
+- Write a text file called `wpa_supplicant.conf` with:
+
+```
 country=US
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 network={
@@ -16,7 +18,7 @@ network={
   psk="YOUR_PASSWORD"
   key_mgmt=WPA-PSK
 }
-``
+```
 
 ### Set Up Tentacle Shield:
 Based on `pi_sample_code.pdf`
@@ -45,9 +47,11 @@ https://docs.aws.amazon.com/iot/latest/developerguide/connecting-to-existing-dev
 - `> python3 -m pip install awsiotsdk`
 - `> git clone https://github.com/aws/aws-iot-device-sdk-python-v2.git`
 - `> mkdir certs`
-- `sean-air ~ % scp ~/Downloads/*.key pi@192.168.1.192:~/certs`
-- `sean-air ~ % scp ~/Downloads/*.pem pi@192.168.1.192:~/certs`
-- `sean-air ~ % scp ~/Downloads/*.crt pi@192.168.1.192:~/certs`
+  ```
+  % scp *.key pi@192.168.1.192:~/certs
+  % scp *.pem pi@192.168.1.192:~/certs
+  % scp *.crt pi@192.168.1.192:~/certs
+  ```
 - `> python3 pubsub.py --topic topic_1 --root-ca ~/certs/Amazon-root-CA-1.pem --cert ~/certs/device.pem.crt --key ~/certs/private.pem.key --endpoint a12dev37b8fhwi-ats.iot.us-west-2.amazonaws.com`
 
 https://docs.aws.amazon.com/iot/latest/developerguide/iot-moisture-raspi-setup.html
