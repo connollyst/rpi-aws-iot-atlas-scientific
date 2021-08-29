@@ -9,13 +9,14 @@ import string
 
 from AtlasI2C import (AtlasI2C)
 
-from awscrt import io, mqtt, auth, http
+from awscrt import io, mqtt
 from awsiot import mqtt_connection_builder
 from uuid import uuid4
 import json
 
 
 read_delay = 1
+
 
 def print_sensors(device_list):
     for dev in device_list:
@@ -29,10 +30,11 @@ def get_sensors():
         print('Device #{}: {}'.format(i, device))
         device.set_i2c_address(i)
         response = device.query("I")
-        moduletype = response.split(",")[1] 
+        moduletype = response.split(",")[1]
         response = device.query("name,?").split(",")[1]
-        device_list.append(AtlasI2C(address = i, moduletype = moduletype, name = response))
-    return device_list 
+        device_list.append(
+            AtlasI2C(address=i, moduletype=moduletype, name=response))
+    return device_list
 
 
 def connect_to_mqtt():
@@ -78,7 +80,7 @@ def read_sensors(mqtt_connection):
             message = dev.read()
             print(message)
             message = {
-                'message' : message
+                'message': message
             }
             message_json = json.dumps(message).replace(r'\u0000', '')
             mqtt_connection.publish(
@@ -90,14 +92,14 @@ def read_sensors(mqtt_connection):
         print('Error:')
         print(e)
         print('Retrying..')
-        read_seansors(mqtt_connection)
+        read_sensors(mqtt_connection)
 
 
 def main():
     mqtt_connection = connect_to_mqtt()
     read_sensors(mqtt_connection)
     disconnect_from_mqtt(mqtt_connection)
-        
-                    
+
+
 if __name__ == '__main__':
     main()
