@@ -1,38 +1,33 @@
 #!/usr/bin/python
 
+from atlas.AtlasScientificI2C import AtlasScientificI2C
 import time
 import copy
+
+from i2c.I2C import I2C
+
 
 class AtlasScientific:
 
     READ_DELAY_SECS = 1
+    DEFAULT_I2C_ADDRESS = 98
+
+    # TODO dependency injection
+    def __init__(self, i2c: AtlasScientificI2C = AtlasScientificI2C):
+        self._i2c = i2c
+        self._current_address = self.DEFAULT_I2C_ADDRESS
 
     def list(self):
-        '''
-        save the current address so we can restore it after
-        '''
-        prev_addr = copy.deepcopy(self._address)
-        i2c_devices = []
-        for i in range(0, 128):
-            try:
-                self.set_i2c_address(i)
-                self.read(1)
-                i2c_devices.append(i)
-            except IOError:
-                pass
-        # restore the address we were using
-        self.set_i2c_address(prev_addr)
-        return i2c_devices
+        self._i2c.list()
 
     def read(self):
         try:
-            device_list = self.get_sensors()
-            self.print_sensors(device_list)
-            for dev in device_list:
-                dev.write("R")
+            device_list = self.list()
+            for device in device_list:
+                device.write("R")
             time.sleep(self.READ_DELAY_SECS)
-            for dev in device_list:
-                message = dev.read()
+            for device in device_list:
+                message = device.read()
                 print(message)
                 return ...
         except IndexError as e:

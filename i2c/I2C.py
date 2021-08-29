@@ -1,15 +1,45 @@
 #!/usr/bin/python
 
+import io
 import sys
 import time
+import fcntl
 
 class I2C:
 
-    def __init__(self):
-        '''
-        '''
-        print('Initializing I2C interface.')
+    DEFAULT_ADDRESS = 98
+    # the default bus for I2C on the newer Raspberry Pis, 
+    # certain older boards use bus 0
+    DEFAULT_BUS = 1
 
+    def __init__(self, bus=None):
+        '''
+        '''
+        self.bus = bus or self.DEFAULT_BUS
+        print('Initializing I2C interface.')
+        self.file_read = io.open(file="/dev/i2c-{}".format(self.bus),
+                                 mode="rb",
+                                 buffering=0)
+        self.file_write = io.open(file="/dev/i2c-{}".format(self.bus),
+                                  mode="wb",
+                                  buffering=0)
+        self.set_i2c_address(self.DEFAULT_ADDRESS)
+
+    def ping(self, address):
+        self.set_i2c_address(address)
+        self.read(1)
+    
+    def set_i2c_address(self, address):
+        '''
+        set the I2C communications to the slave specified by the address
+        the commands for I2C dev using the ioctl functions are specified in
+        the i2c-dev.h file from i2c-tools
+        '''
+        I2C_SLAVE = 0x703
+        fcntl.ioctl(self.file_read, I2C_SLAVE, address)
+        fcntl.ioctl(self.file_write, I2C_SLAVE, address)
+        self._address = address
+    
     def query(self, command) -> str:
         '''
         Write a command, wait the appropriate timeout, & read the response.
