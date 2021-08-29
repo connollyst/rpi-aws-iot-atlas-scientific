@@ -16,13 +16,14 @@ class AtlasScientificI2C:
     LONG_TIMEOUT_COMMANDS = ("R", "CAL")
     SLEEP_COMMANDS = ("SLEEP", )
 
-    def __init__(self, i2c: I2C = I2C(), address=None, bus=None):
+    def __init__(self, i2c: I2C = None, address=None, bus=None):
         '''
         open two file streams, one for reading and one for writing
         the specific I2C channel is selected with bus
         it is usually 1, except for older revisions where its 0
         wb and rb indicate binary read and write
         '''
+        # TODO set I2C
         self._address = address or self.DEFAULT_ADDRESS
         self.bus = bus or self.DEFAULT_BUS
         self._long_timeout = self.LONG_TIMEOUT
