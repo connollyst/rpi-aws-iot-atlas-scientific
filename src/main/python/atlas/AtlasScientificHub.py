@@ -7,7 +7,7 @@ import json
 from awscrt import mqtt
 
 
-class AtlasScientificI2CReader:
+class AtlasScientificHub:
 
     READ_DELAY_SECS = 1
 

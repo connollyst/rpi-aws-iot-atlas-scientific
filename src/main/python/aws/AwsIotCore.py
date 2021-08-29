@@ -5,7 +5,7 @@ from awsiot import mqtt_connection_builder
 
 class AwsIotCore:
 
-    def __init__(self,
+    def __init__(self,Î
                 endpoint,
                 cert_filepath='/home/pi/aws/certs/device.pem.crt',
                 ca_filepath='/home/pi/aws/certs/Amazon-root-CA-1.pem',
@@ -13,7 +13,7 @@ class AwsIotCore:
         '''
         ...
         '''
-        self._endpoint=endpoint
+        self._endpoint = endpoint
         self._cert_filepath = cert_filepath
         self._ca_filepath = ca_filepath
         self._private_key_filepath = private_key_filepath
