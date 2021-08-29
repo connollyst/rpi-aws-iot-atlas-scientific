@@ -18,21 +18,21 @@ class I2C:
         time.sleep(self.__get_command_timeout(command))
         return self.__read()
 
-    def __write(self, cmd):
+    def __write(self, command):
         '''
         Appends the null character and sends the string over I2C
         '''
-        cmd += "\00"
-        self.file_write.write(cmd.encode('latin-1'))
+        command += "\00"
+        self.file_write.write(command.encode('latin-1'))
 
     def __get_command_timeout(command):
         return 1 # TODO replace
     
-    def __read(self, num_of_bytes=31):
+    def __read(self, bytes=31):
         '''
         Reads a specified number of bytes from I2C, then parses and displays the result
         '''
-        raw_data = self.file_read.read(num_of_bytes)
+        raw_data = self.file_read.read(bytes)
         response = self.__get_response(raw_data=raw_data)
         print(response)
         is_valid, error_code = self.__is_response_valid(response=response)
@@ -72,7 +72,7 @@ class I2C:
                 error_code = str(ord(response[0]))
             else:
                 error_code = str(response[0])
-            if error_code != '1':  # 1:
+            if error_code != '1':
                 valid = False
         return valid, error_code
 

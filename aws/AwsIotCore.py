@@ -1,11 +1,14 @@
 #!/usr/bin/python
 
-from awscrt import io
+import json
+import time
+
+from awscrt import io, mqtt
 from awsiot import mqtt_connection_builder
 
 class AwsIotCore:
 
-    def __init__(self,Î
+    def __init__(self,
                 endpoint,
                 cert_filepath='/home/pi/aws/certs/device.pem.crt',
                 ca_filepath='/home/pi/aws/certs/Amazon-root-CA-1.pem',
@@ -17,6 +20,7 @@ class AwsIotCore:
         self._cert_filepath = cert_filepath
         self._ca_filepath = ca_filepath
         self._private_key_filepath = private_key_filepath
+        self._connection = None
 
     @property
     def endpoint(self):
@@ -54,9 +58,20 @@ class AwsIotCore:
         print("Connecting to {} with client ID '{}'...".format(self.endpoint, client_id))
         connect_future = mqtt_connection.connect()
         connect_future.result()
+        self._connection = mqtt_connection
         print("Connected!")
-        return mqtt_connection
 
+
+    def write(self, data):
+        message = {
+            'message': data
+        }
+        message_json = json.dumps(message).replace(r'\u0000', '')
+        self._connection.publish(
+            topic='atlas',
+            payload=message_json,
+            qos=mqtt.QoS.AT_LEAST_ONCE)
+        time.sleep(1)
 
     def disconnect(mqtt_connection):
         print("Disconnecting...")
