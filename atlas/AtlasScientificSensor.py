@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
-
-
-from main.python.i2c.I2C import I2C
+from i2c.I2C import I2C
 
 class AtlasScientificSensor:
 

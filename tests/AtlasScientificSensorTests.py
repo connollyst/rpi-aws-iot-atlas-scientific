@@ -2,8 +2,8 @@ import unittest
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
-from main.python.atlas.AtlasScientificSensor import AtlasScientificSensor
-from main.python.i2c.I2C import I2C
+from atlas.AtlasScientificSensor import AtlasScientificSensor
+from i2c.I2C import I2C
 
 def add(x,y):
     return x + y
