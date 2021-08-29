@@ -10,15 +10,15 @@ class I2C:
         '''
         print('Initializing I2C interface.')
 
-    def query(self, command, wait):
+    def query(self, command) -> str:
         '''
         Write a command, wait the appropriate timeout, & read the response.
         '''
-        self.write(command)
+        self.__write(command)
         time.sleep(self.__get_command_timeout(command))
-        return self.read()
+        return self.__read()
 
-    def write(self, cmd):
+    def __write(self, cmd):
         '''
         Appends the null character and sends the string over I2C
         '''
@@ -28,7 +28,7 @@ class I2C:
     def __get_command_timeout(command):
         return 1 # TODO replace
     
-    def read(self, num_of_bytes=31):
+    def __read(self, num_of_bytes=31):
         '''
         Reads a specified number of bytes from I2C, then parses and displays the result
         '''

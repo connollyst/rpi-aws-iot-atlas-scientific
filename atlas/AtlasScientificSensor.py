@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from atlas.AtlasScientificSensorReading import AtlasScientificSensorReading
 from i2c.I2C import I2C
 
 class AtlasScientificSensor:
@@ -22,11 +23,12 @@ class AtlasScientificSensor:
     def type(self):
         return self._type
 
-    def info(self):
+    def info(self) -> str:
         if(self._name == ""):
             return self._type + " " + str(self.address)
         else:
             return self._type + " " + str(self.address) + " " + self._name
 
-    def read(self):
-        return self._i2c.query('R')
+    def read(self) -> AtlasScientificSensorReading:
+        reading = self._i2c.query('R')
+        return AtlasScientificSensorReading(reading)
