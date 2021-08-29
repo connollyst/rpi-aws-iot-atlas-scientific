@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
+import fcntl
 import io
 import sys
 import time
-import fcntl
+
 
 class I2C:
-
     DEFAULT_ADDRESS = 98
     # the default bus for I2C on the newer Raspberry Pis, 
     # certain older boards use bus 0
@@ -28,7 +28,7 @@ class I2C:
     def ping(self, address):
         self.set_i2c_address(address)
         self.read(1)
-    
+
     def set_i2c_address(self, address):
         '''
         set the I2C communications to the slave specified by the address
@@ -39,7 +39,7 @@ class I2C:
         fcntl.ioctl(self.file_read, I2C_SLAVE, address)
         fcntl.ioctl(self.file_write, I2C_SLAVE, address)
         self._address = address
-    
+
     def query(self, command) -> str:
         '''
         Write a command, wait the appropriate timeout, & read the response.
@@ -56,8 +56,8 @@ class I2C:
         self.file_write.write(command.encode('latin-1'))
 
     def __get_command_timeout(command):
-        return 1 # TODO replace
-    
+        return 1  # TODO replace
+
     def __read(self, bytes=31):
         '''
         Reads a specified number of bytes from I2C, then parses and displays the result
@@ -73,7 +73,6 @@ class I2C:
             result = "Error " + self.info() + ": " + error_code
         return result
 
-        
     def __handle_raspi_glitch(self, response):
         '''
         Change MSB to 0 for all received characters except the first 
@@ -97,7 +96,7 @@ class I2C:
     def __is_response_valid(self, response):
         valid = True
         error_code = None
-        if(len(response) > 0):
+        if (len(response) > 0):
             if self.__app_using_python_two():
                 error_code = str(ord(response[0]))
             else:

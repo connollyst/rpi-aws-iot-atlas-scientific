@@ -3,6 +3,7 @@
 from atlas.AtlasScientificSensorReading import AtlasScientificSensorReading
 from i2c.I2C import I2C
 
+
 class AtlasScientificSensor:
 
     def __init__(self, name, type, address, i2c: I2C):
@@ -10,7 +11,7 @@ class AtlasScientificSensor:
         self._type = type
         self._address = address
         self._i2c = i2c
-       
+
     @property
     def name(self):
         return self._name
@@ -24,7 +25,7 @@ class AtlasScientificSensor:
         return self._type
 
     def info(self) -> str:
-        if(self._name == ""):
+        if (self._name == ""):
             return self._type + " " + str(self.address)
         else:
             return self._type + " " + str(self.address) + " " + self._name

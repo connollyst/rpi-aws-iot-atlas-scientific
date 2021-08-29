@@ -1,19 +1,14 @@
 #!/usr/bin/python
 
 import io
-import sys
-import fcntl
+import json
 import time
-import copy
-import string
-
-from AtlasI2C import (AtlasI2C)
+from uuid import uuid4
 
 from awscrt import io, mqtt
 from awsiot import mqtt_connection_builder
-from uuid import uuid4
-import json
 
+from atlas.__OfficialReference import AtlasI2C
 
 read_delay = 1
 

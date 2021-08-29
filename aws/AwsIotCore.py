@@ -6,13 +6,14 @@ import time
 from awscrt import io, mqtt
 from awsiot import mqtt_connection_builder
 
+
 class AwsIotCore:
 
     def __init__(self,
-                endpoint,
-                cert_filepath='/home/pi/aws/certs/device.pem.crt',
-                ca_filepath='/home/pi/aws/certs/Amazon-root-CA-1.pem',
-                private_key_filepath='/home/pi/aws/certs/private.pem.key'):
+                 endpoint,
+                 cert_filepath='/home/pi/aws/certs/device.pem.crt',
+                 ca_filepath='/home/pi/aws/certs/Amazon-root-CA-1.pem',
+                 private_key_filepath='/home/pi/aws/certs/private.pem.key'):
         '''
         ...
         '''
@@ -33,7 +34,7 @@ class AwsIotCore:
     @property
     def ca_filepath(self):
         return self._ca_filepath
-    
+
     @property
     def private_key_filepath(self):
         return self._private_key_filepath
@@ -60,7 +61,6 @@ class AwsIotCore:
         connect_future.result()
         self._connection = mqtt_connection
         print("Connected!")
-
 
     def write(self, data):
         message = {

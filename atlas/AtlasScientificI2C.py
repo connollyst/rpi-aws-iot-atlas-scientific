@@ -4,7 +4,6 @@ from i2c.I2C import I2C
 
 
 class AtlasScientificI2C:
-
     # the timeout needed to query readings and calibrations
     LONG_TIMEOUT = 1.5
     # timeout for regular commands
@@ -12,9 +11,9 @@ class AtlasScientificI2C:
     # the default bus for I2C on the newer Raspberry Pis,
     # certain older boards use bus 0
     DEFAULT_BUS = 1
-    
+
     LONG_TIMEOUT_COMMANDS = ("R", "CAL")
-    SLEEP_COMMANDS = ("SLEEP", )
+    SLEEP_COMMANDS = ("SLEEP",)
 
     def __init__(self, i2c: I2C = None, address=None, bus=None):
         '''
