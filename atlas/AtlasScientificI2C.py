@@ -15,3 +15,6 @@ class AtlasScientificI2C:
             print('Found sensor @ address {}'.format(i2c_address))
             sensors.append(AtlasScientificSensor(i2c_address, self._i2c))
         return sensors
+
+    def close(self):
+        self._i2c.close()

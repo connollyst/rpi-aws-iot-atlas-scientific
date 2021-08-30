@@ -10,3 +10,6 @@ class AtlasScientific:
 
     def get_all_sensors(self):
         return self._i2c.list_sensors()
+
+    def close(self):
+        self._i2c.close()

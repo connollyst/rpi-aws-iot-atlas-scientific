@@ -14,9 +14,6 @@ class AwsIotCore:
                  cert_filepath='/home/pi/aws/certs/device.pem.crt',
                  ca_filepath='/home/pi/aws/certs/Amazon-root-CA-1.pem',
                  private_key_filepath='/home/pi/aws/certs/private.pem.key'):
-        '''
-        ...
-        '''
         self._endpoint = endpoint
         self._cert_filepath = cert_filepath
         self._ca_filepath = ca_filepath
@@ -40,9 +37,6 @@ class AwsIotCore:
         return self._private_key_filepath
 
     def connect(self, client_id):
-        '''
-        ...
-        '''
         event_loop_group = io.EventLoopGroup(1)
         host_resolver = io.DefaultHostResolver(event_loop_group)
         client_bootstrap = io.ClientBootstrap(event_loop_group, host_resolver)
@@ -73,8 +67,8 @@ class AwsIotCore:
             qos=mqtt.QoS.AT_LEAST_ONCE)
         time.sleep(1)
 
-    def disconnect(mqtt_connection):
-        print("Disconnecting...")
-        disconnect_future = mqtt_connection.disconnect()
+    def disconnect(self):
+        print("Disconnecting from AWS...")
+        disconnect_future = self._connection.disconnect()
         disconnect_future.result()
-        print("Disconnected!")
+        print("Disconnected from AWS.")

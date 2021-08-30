@@ -1,23 +1,26 @@
 #!/usr/bin/python
 
-from io.CommsProtocol import CommsProtocol
-
 from atlas.AtlasScientificSensorReading import AtlasScientificSensorReading
+from comms.IO import IO
 
 
 class AtlasScientificSensor:
-    # the timeout needed to query readings and calibrations
+    # Timeout needed to query readings and calibrations
     LONG_TIMEOUT = 1.5
-    # timeout for regular commands
+    # Timeout for regular commands
     SHORT_TIMEOUT = .3
 
-    def __init__(self, address, io: CommsProtocol):
+    NAME_COMMAND = 'name,?'
+    INFO_COMMAND = 'I'
+    READ_COMMAND = 'R'
+
+    def __init__(self, address, io: IO):
         self._address = address
         self._io = io
-        name = self._io.send_and_receive(address, "name,?", self.SHORT_TIMEOUT)
-        print('> name,?: {}'.format(name))
-        info = self._io.send_and_receive(address, "I", self.SHORT_TIMEOUT)
-        print('> I     : {}'.format(info))
+        name = self._io.send_and_receive(address, self.NAME_COMMAND, self.SHORT_TIMEOUT)
+        print('> {}: {}'.format(self.NAME_COMMAND, name))
+        info = self._io.send_and_receive(address, self.INFO_COMMAND, self.SHORT_TIMEOUT)
+        print('> {}     : {}'.format(self.INFO_COMMAND, info))
         try:
             self._name = name.split(",")[1]
         except IndexError:
@@ -44,10 +47,11 @@ class AtlasScientificSensor:
     def take_reading(self) -> AtlasScientificSensorReading:
         # TODO store reading
         # TODO support multiple readings
-        return AtlasScientificSensorReading(self._io.send_and_receive(self.address, 'R', self.LONG_TIMEOUT))
+        return AtlasScientificSensorReading(
+            self._io.send_and_receive(self.address, self.READ_COMMAND, self.LONG_TIMEOUT))
 
     def __str__(self):
-        if self._name == "":
-            return self._module + " " + str(self.address)
+        if self._name == '':
+            return self._module + ' ' + str(self.address)
         else:
-            return self._module + " " + str(self.address) + " " + self._name
+            return self._module + ' ' + str(self.address) + ' ' + self._name
