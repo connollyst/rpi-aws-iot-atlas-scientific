@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import json
+
 from atlas.AtlasScientificSensorReading import AtlasScientificSensorReading
 from comms.IO import IO
 
@@ -59,7 +61,23 @@ class AtlasScientificSensor:
         return AtlasScientificSensorReading(
             self._io.send_and_receive(self.address, self.READ_COMMAND, self.LONG_TIMEOUT))
 
-    def __str__(self):
+    def to_json(self) -> str:
+        # TODO I don't like this side affect
+        reading = self.take_reading()
+        message = {
+            'address': self.address,
+            'name': self.name,
+            'module': self.module,
+            'version': self.version,
+            'reading': {
+                'value': reading.value,
+                'timestamp': reading.timestamp
+            }
+        }
+        # TODO necessary to replace still?
+        return json.dumps(message, indent=4, default=str).replace(r'\u0000', '')
+
+    def __str__(self) -> str:
         if self._name == '':
             return self._module + ' ' + str(self.address)
         else:

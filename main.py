@@ -14,10 +14,10 @@ def main():
     writer = AwsIotCore(AWS_ENDPOINT)
     writer.connect("test-" + str(uuid4()))
     for sensor in sensors:
-        reading = sensor.take_reading()
-        print(reading)
-        # TODO serialize sensor & reading
-        writer.write(reading.value)
+        # TODO relies on take_reading side effect
+        json = sensor.to_json()
+        print(json)
+        writer.write(json)
     writer.disconnect()
     atlas.close()
 

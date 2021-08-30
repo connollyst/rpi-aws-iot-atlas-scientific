@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import json
 import time
 
 from awscrt import io, mqtt
@@ -56,15 +55,8 @@ class AwsIotCore:
         self._connection = mqtt_connection
         print("Connected!")
 
-    def write(self, data):
-        message = {
-            'message': data
-        }
-        message_json = json.dumps(message).replace(r'\u0000', '')
-        self._connection.publish(
-            topic='atlas',
-            payload=message_json,
-            qos=mqtt.QoS.AT_LEAST_ONCE)
+    def write(self, json):
+        self._connection.publish(topic='atlas', payload=json.replace(r'\u0000', ''), qos=mqtt.QoS.AT_LEAST_ONCE)
         time.sleep(1)
 
     def disconnect(self):

@@ -1,3 +1,4 @@
+import json
 import unittest
 from unittest.mock import ANY
 from unittest.mock import MagicMock, Mock
@@ -92,6 +93,23 @@ class TestAtlasScientificSensor(unittest.TestCase):
         reading = sensor.take_reading()
         # Then
         self.assertEqual('Err', reading.value)
+
+    def test_sensor_json(self):
+        # Given
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock()
+        mock_io.send_and_receive.side_effect = ['?NAME,myAtlasScientificSensor', '?I,HUM,1.0', '97.36,31.60,Dew,31.13']
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # When
+        output = sensor.to_json()
+        print(output)
+        # Then
+        data = json.loads(output)
+        self.assertEqual(self.SENSOR_ADDRESS, data['address'])
+        self.assertEqual('myAtlasScientificSensor', data['name'])
+        self.assertEqual('HUM', data['module'])
+        self.assertEqual('1.0', data['version'])
+        self.assertEqual('97.36,31.60,Dew,31.13', data['reading']['value'])
 
 
 if __name__ == '__main__':
