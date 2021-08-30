@@ -2,8 +2,8 @@
 
 from uuid import uuid4
 
-from atlas.AtlasScientific import AtlasScientific
-from aws.AwsIotCore import AwsIotCore
+from src.main.atlas.AtlasScientific import AtlasScientific
+from src.main.aws.AwsIotCore import AwsIotCore
 
 AWS_ENDPOINT = 'a12dev37b8fhwi-ats.iot.us-west-2.amazonaws.com'
 
