@@ -9,6 +9,7 @@ from comms.IO import IO
 
 
 class I2C(IO):
+    I2C_SLAVE = 0x703
     DEFAULT_ADDRESS = 98
     # the default bus for I2C on the newer Raspberry Pis, 
     # certain older boards use bus 0
@@ -23,53 +24,62 @@ class I2C(IO):
         self.file_write = io.open(file="/dev/i2c-{}".format(self.bus),
                                   mode="wb",
                                   buffering=0)
-        self.set_i2c_address(self.DEFAULT_ADDRESS)
+        self.__set_i2c_address(self.DEFAULT_ADDRESS)
+
+    def close(self):
+        self.file_read.close()
+        self.file_write.close()
 
     def send_and_receive(self, address, message, wait=0):
-        return self.query(address, message, wait)
+        """
+        Write a command, wait the appropriate timeout, & read the response.
+        """
+        self.__set_i2c_address(address)
+        self.__write(message)
+        time.sleep(wait)
+        response, success = self.__read()
+        if not success:
+            print('Retrying..')
+            # TODO smarter retries please
+            time.sleep(wait)
+            response, success = self.__read()
+        return response
 
     def send(self, address, message):
-        # TODO consolidate
-        self.set_i2c_address(address)
+        """
+        Write a command and return immediately.
+        """
+        self.__set_i2c_address(address)
         self.__write(message)
 
-    def receive(self, address):
-        self.set_i2c_address(address)
-        return self.__read()
+    def receive(self, address) -> str:
+        self.__set_i2c_address(address)
+        response, success = self.__read()
+        # TODO if unsuccessful, retry
+        return response
 
     def find_all_i2c_devices(self):
         i2c_devices = []
         for i2c_address in range(0, 128):
             try:
-                self.ping(i2c_address)
+                self.__ping(i2c_address)
                 i2c_devices.append(i2c_address)
             except IOError:
                 pass
         return i2c_devices
 
-    def ping(self, address):
-        self.set_i2c_address(address)
+    def __ping(self, address):
+        self.__set_i2c_address(address)
         self.__read(1)
 
-    def set_i2c_address(self, address):
+    def __set_i2c_address(self, address):
         """
         set the I2C communications to the slave specified by the address
         the commands for I2C dev using the ioctl functions are specified in
         the i2c-dev.h file from i2c-tools
         """
-        I2C_SLAVE = 0x703
-        fcntl.ioctl(self.file_read, I2C_SLAVE, address)
-        fcntl.ioctl(self.file_write, I2C_SLAVE, address)
-        self._address = address
-
-    def query(self, address, command, delay) -> str:
-        """
-        Write a command, wait the appropriate timeout, & read the response.
-        """
-        self.set_i2c_address(address)
-        self.__write(command)
-        time.sleep(delay)
-        return self.__read()
+        fcntl.ioctl(self.file_read, self.I2C_SLAVE, address)
+        fcntl.ioctl(self.file_write, self.I2C_SLAVE, address)
 
     def __write(self, command):
         """
@@ -83,15 +93,32 @@ class I2C(IO):
         Reads a specified number of bytes from I2C, then parses and displays the result
         """
         raw_data = self.file_read.read(bytes)
-        response = self.__get_response(raw_data=raw_data)
-        # print(response)
-        is_valid, error_code = self.__is_response_valid(response=response)
+        response = self.__get_response(raw_data)
+        is_valid, error_code = self.__is_response_valid(response)
         if is_valid:
             char_list = self.__handle_raspi_glitch(response[1:])
-            result = "Success : " + str(''.join(char_list))
+            return str(''.join(char_list)), is_valid
         else:
-            result = "Error : " + error_code
-        return result
+            return error_code, is_valid
+
+    def __get_response(self, raw_data):
+        if self.__app_using_python_two():
+            response = [i for i in raw_data if i != '\x00']
+        else:
+            response = raw_data
+        return response
+
+    def __is_response_valid(self, response):
+        valid = True
+        error_code = None
+        if len(response) > 0:
+            if self.__app_using_python_two():
+                error_code = str(ord(response[0]))
+            else:
+                error_code = str(response[0])
+            if error_code != '1':
+                valid = False
+        return valid, error_code
 
     def __handle_raspi_glitch(self, response):
         """
@@ -105,29 +132,5 @@ class I2C(IO):
         else:
             return list(map(lambda x: chr(x & ~0x80), list(response)))
 
-    def __get_response(self, raw_data):
-        if self.__app_using_python_two():
-            response = [i for i in raw_data if i != '\x00']
-        else:
-            response = raw_data
-
-        return response
-
-    def __is_response_valid(self, response):
-        valid = True
-        error_code = None
-        if (len(response) > 0):
-            if self.__app_using_python_two():
-                error_code = str(ord(response[0]))
-            else:
-                error_code = str(response[0])
-            if error_code != '1':
-                valid = False
-        return valid, error_code
-
     def __app_using_python_two(self):
         return sys.version_info[0] < 3
-
-    def close(self):
-        self.file_read.close()
-        self.file_write.close()

@@ -17,7 +17,7 @@ class TestAtlasScientificSensor(unittest.TestCase):
     def test_sensor_name(self):
         # Given
         mock_io = MagicMock()
-        mock_io.send_and_receive = Mock(return_value='Success : ?NAME,myAtlasScientificSensor')
+        mock_io.send_and_receive = Mock(return_value='?NAME,myAtlasScientificSensor')
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # Then
         self.assertEqual('myAtlasScientificSensor', sensor.name)
@@ -25,7 +25,7 @@ class TestAtlasScientificSensor(unittest.TestCase):
     def test_sensor_name_undefined(self):
         # Given
         mock_io = MagicMock()
-        mock_io.send_and_receive = Mock(return_value='Success : ?NAME,')
+        mock_io.send_and_receive = Mock(return_value='?NAME,')
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # Then
         self.assertEqual('', sensor.name)
@@ -41,7 +41,7 @@ class TestAtlasScientificSensor(unittest.TestCase):
     def test_sensor_module(self):
         # Given
         mock_io = MagicMock()
-        mock_io.send_and_receive = Mock(return_value='Success : ?I,RTD,2.11')
+        mock_io.send_and_receive = Mock(return_value='?I,RTD,2.11')
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # Then
         self.assertEqual('RTD', sensor.module)
@@ -49,7 +49,7 @@ class TestAtlasScientificSensor(unittest.TestCase):
     def test_sensor_version(self):
         # Given
         mock_io = MagicMock()
-        mock_io.send_and_receive = Mock(return_value='Success : ?I,RTD,2.11')
+        mock_io.send_and_receive = Mock(return_value='?I,RTD,2.11')
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # Then
         self.assertEqual('2.11', sensor.version)
@@ -66,7 +66,7 @@ class TestAtlasScientificSensor(unittest.TestCase):
     def test_sensor_read_value(self):
         # Given
         mock_io = MagicMock()
-        mock_io.send_and_receive = Mock(return_value='Success : 28.306')
+        mock_io.send_and_receive = Mock(return_value='28.306')
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # When
         reading = sensor.take_reading()
@@ -76,7 +76,7 @@ class TestAtlasScientificSensor(unittest.TestCase):
     def test_sensor_read_value_humidity(self):
         # Given
         mock_io = MagicMock()
-        mock_io.send_and_receive = Mock(return_value='Success :97.36,31.60,Dew,31.13')
+        mock_io.send_and_receive = Mock(return_value='97.36,31.60,Dew,31.13')
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # When
         reading = sensor.take_reading()
