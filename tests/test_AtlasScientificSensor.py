@@ -39,9 +39,9 @@ class TestAtlasScientificSensor(unittest.TestCase):
 
     def test_sensor_read_value(self):
         # Given
-        mockI2C = MagicMock()
-        mockI2C.query = Mock(return_value='Hello World!')
-        sensor = AtlasScientificSensor('testName', 'testType', 'testAddress', mockI2C)
+        mock_i2c = MagicMock()
+        mock_i2c.query = Mock(return_value='Hello World!')
+        sensor = AtlasScientificSensor('testName', 'testType', 'testAddress', mock_i2c)
         # When
         reading = sensor.read()
         # Then

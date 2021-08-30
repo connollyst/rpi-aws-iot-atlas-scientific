@@ -1,14 +1,14 @@
 #!/usr/bin/python
 
 from atlas.AtlasScientific import AtlasScientific
-from aws.AwsIotCore import AwsIotCore
 
 
 def main():
     reader = AtlasScientific()
-    writer = AwsIotCore()
-    reading = reader.read()
-    writer.write(reading)
+    # writer = AwsIotCore()
+    reading = reader.read_all()
+    print(reading)
+    # writer.write(reading)
 
 
 if __name__ == '__main__':

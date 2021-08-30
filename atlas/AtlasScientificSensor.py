@@ -1,16 +1,20 @@
 #!/usr/bin/python
 
-from atlas.AtlasScientificSensorReading import AtlasScientificSensorReading
-from i2c.I2C import I2C
-
 
 class AtlasScientificSensor:
 
-    def __init__(self, name, type, address, i2c: I2C):
-        self._name = name
-        self._type = type
+    def __init__(self, name, info, address):
+        try:
+            self._name = name.split(",")[1]
+        except IndexError:
+            # TODO do better than this!
+            self._name = name
+        try:
+            self._module = info.split(",")[1]
+        except IndexError:
+            # TODO do better than this!
+            self._module = info
         self._address = address
-        self._i2c = i2c
 
     @property
     def name(self):
@@ -21,15 +25,14 @@ class AtlasScientificSensor:
         return self._address
 
     @property
-    def type(self):
-        return self._type
+    def module(self):
+        return self._module
 
     def info(self) -> str:
-        if (self._name == ""):
-            return self._type + " " + str(self.address)
+        if self._name == "":
+            return self._module + " " + str(self.address)
         else:
-            return self._type + " " + str(self.address) + " " + self._name
+            return self._module + " " + str(self.address) + " " + self._name
 
-    def read(self) -> AtlasScientificSensorReading:
-        reading = self._i2c.query('R')
-        return AtlasScientificSensorReading(reading)
+    def __str__(self):
+        return self.info()

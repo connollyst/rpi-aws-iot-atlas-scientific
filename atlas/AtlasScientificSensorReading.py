@@ -7,5 +7,8 @@ class AtlasScientificSensorReading:
         self._value = value
 
     @property
-    def value(self: str):
+    def value(self):
         return self._value
+
+    def __str__(self):
+        return self.value
