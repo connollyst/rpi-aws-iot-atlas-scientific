@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-import io
 import json
 import time
 from uuid import uuid4
 
-from awscrt import io, mqtt
+from awscrt import mqtt
 from awsiot import mqtt_connection_builder
 
+import comms
 from atlas.__OfficialReference import AtlasI2C
 
 read_delay = 1
@@ -33,9 +33,9 @@ def get_sensors():
 
 
 def connect_to_mqtt():
-    event_loop_group = io.EventLoopGroup(1)
-    host_resolver = io.DefaultHostResolver(event_loop_group)
-    client_bootstrap = io.ClientBootstrap(event_loop_group, host_resolver)
+    event_loop_group = comms.EventLoopGroup(1)
+    host_resolver = comms.DefaultHostResolver(event_loop_group)
+    client_bootstrap = comms.ClientBootstrap(event_loop_group, host_resolver)
     endpoint = 'a12dev37b8fhwi-ats.iot.us-west-2.amazonaws.com'
     client_id = "test-" + str(uuid4())
     mqtt_connection = mqtt_connection_builder.mtls_from_path(

@@ -3,7 +3,6 @@
 class AtlasScientificSensorReading:
 
     def __init__(self, value: str):
-        print('Creating new sensor reading!')
         self._value = value
 
     @property

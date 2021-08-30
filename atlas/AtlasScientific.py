@@ -8,8 +8,5 @@ class AtlasScientific:
     def __init__(self, i2c: AtlasScientificI2C = None):
         self._i2c = i2c or AtlasScientificI2C()
 
-    def list_all(self):
+    def get_all_sensors(self):
         return self._i2c.list_sensors()
-
-    def read_all(self):
-        return self._i2c.read_sensors()
