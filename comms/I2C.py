@@ -43,6 +43,9 @@ class I2C(IO):
             # TODO smarter retries please
             time.sleep(wait)
             response, success = self.__read()
+            if not success:
+                response = 'Err'
+                # raise IOError('Failed to receive I2C response at address {} with command {}!'.format(address, message))
         return response
 
     def send(self, address, message):

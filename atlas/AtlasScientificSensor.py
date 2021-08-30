@@ -37,7 +37,7 @@ class AtlasScientificSensor:
             self._version = info.split(",")[2]
         except IndexError:
             # TODO do better than this!
-            self._version = '?'
+            self._version = 'Err'
 
     @property
     def address(self):

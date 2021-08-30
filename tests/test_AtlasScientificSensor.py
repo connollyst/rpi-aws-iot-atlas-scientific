@@ -34,7 +34,7 @@ class TestAtlasScientificSensor(unittest.TestCase):
     def test_sensor_name_error(self):
         # Given
         mock_io = MagicMock()
-        mock_io.send_and_receive = Mock(return_value='Error : 128')
+        mock_io.send_and_receive = Mock(return_value='Err')
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # Then
         self.assertEqual('Err', sensor.name)
@@ -47,6 +47,14 @@ class TestAtlasScientificSensor(unittest.TestCase):
         # Then
         self.assertEqual('RTD', sensor.module)
 
+    def test_sensor_module_error(self):
+        # Given
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Err')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # Then
+        self.assertEqual('Err', sensor.module)
+
     def test_sensor_version(self):
         # Given
         mock_io = MagicMock()
@@ -54,6 +62,14 @@ class TestAtlasScientificSensor(unittest.TestCase):
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # Then
         self.assertEqual('2.11', sensor.version)
+
+    def test_sensor_version_error(self):
+        # Given
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Err')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # Then
+        self.assertEqual('Err', sensor.version)
 
     def test_sensor_read_queries_io(self):
         # Given
@@ -87,7 +103,7 @@ class TestAtlasScientificSensor(unittest.TestCase):
     def test_sensor_read_value_error(self):
         # Given
         mock_io = MagicMock()
-        mock_io.send_and_receive = Mock(return_value='Error : 128')
+        mock_io.send_and_receive = Mock(return_value='Err')
         sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # When
         reading = sensor.take_reading()
