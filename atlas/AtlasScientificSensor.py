@@ -25,24 +25,33 @@ class AtlasScientificSensor:
             self._name = name.split(",")[1]
         except IndexError:
             # TODO do better than this!
-            self._name = name
+            self._name = 'Err'
         try:
             self._module = info.split(",")[1]
         except IndexError:
             # TODO do better than this!
             self._module = info
-
-    @property
-    def name(self):
-        return self._name
+        try:
+            self._version = info.split(",")[2]
+        except IndexError:
+            # TODO do better than this!
+            self._version = '?'
 
     @property
     def address(self):
         return self._address
 
     @property
+    def name(self):
+        return self._name
+
+    @property
     def module(self):
         return self._module
+
+    @property
+    def version(self):
+        return self._version
 
     def take_reading(self) -> AtlasScientificSensorReading:
         # TODO store reading

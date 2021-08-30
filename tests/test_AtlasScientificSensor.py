@@ -1,51 +1,97 @@
 import unittest
+from unittest.mock import ANY
 from unittest.mock import MagicMock, Mock
 
 from atlas.AtlasScientificSensor import AtlasScientificSensor
 
 
 class TestAtlasScientificSensor(unittest.TestCase):
-    def test_sensor_name(self):
-        # Given
-        sensor = AtlasScientificSensor('testName', 'testType', 'testAddress', MagicMock())
-        # Then
-        self.assertEqual(sensor.name, 'testName')
-
-    def test_sensor_type(self):
-        # Given
-        sensor = AtlasScientificSensor('testName', 'testType', 'testAddress', MagicMock())
-        # Then
-        self.assertEqual(sensor.type, 'testType')
+    SENSOR_ADDRESS = 'testSensorAddress'
 
     def test_sensor_address(self):
         # Given
-        sensor = AtlasScientificSensor('testName', 'testType', 'testAddress', MagicMock())
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, MagicMock())
         # Then
-        self.assertEqual(sensor.address, 'testAddress')
+        self.assertEqual(self.SENSOR_ADDRESS, sensor.address)
 
-    def test_sensor_info(self):
+    def test_sensor_name(self):
         # Given
-        sensor = AtlasScientificSensor('testName', 'testType', 'testAddress', MagicMock())
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Success : ?NAME,myAtlasScientificSensor')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # Then
-        self.assertEqual(sensor.info(), 'testType testAddress testName')
+        self.assertEqual('myAtlasScientificSensor', sensor.name)
 
-    def test_sensor_read_queries_i2c(self):
+    def test_sensor_name_undefined(self):
         # Given
-        sensor = AtlasScientificSensor('testName', 'testType', 'testAddress', MagicMock())
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Success : ?NAME,')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # Then
+        self.assertEqual('', sensor.name)
+
+    def test_sensor_name_error(self):
+        # Given
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Error : 128')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # Then
+        self.assertEqual('Err', sensor.name)
+
+    def test_sensor_module(self):
+        # Given
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Success : ?I,RTD,2.11')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # Then
+        self.assertEqual('RTD', sensor.module)
+
+    def test_sensor_version(self):
+        # Given
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Success : ?I,RTD,2.11')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # Then
+        self.assertEqual('2.11', sensor.version)
+
+    def test_sensor_read_queries_io(self):
+        # Given
+        mock_io = MagicMock()
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # When
-        sensor.read()
+        sensor.take_reading()
         # Then
-        sensor._i2c.query.assert_called_with('R')
+        mock_io.send_and_receive.assert_called_with(self.SENSOR_ADDRESS, 'R', ANY)
 
     def test_sensor_read_value(self):
         # Given
-        mock_i2c = MagicMock()
-        mock_i2c.query = Mock(return_value='Hello World!')
-        sensor = AtlasScientificSensor('testName', 'testType', 'testAddress', mock_i2c)
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Success : 28.306')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
         # When
-        reading = sensor.read()
+        reading = sensor.take_reading()
         # Then
-        self.assertEqual(reading.value, 'Hello World!')
+        self.assertEqual('28.306', reading.value)
+
+    def test_sensor_read_value_humidity(self):
+        # Given
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Success :97.36,31.60,Dew,31.13')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # When
+        reading = sensor.take_reading()
+        # Then
+        self.assertEqual('97.36,31.60,Dew,31.13', reading.value)
+
+    def test_sensor_read_value_error(self):
+        # Given
+        mock_io = MagicMock()
+        mock_io.send_and_receive = Mock(return_value='Error : 128')
+        sensor = AtlasScientificSensor(self.SENSOR_ADDRESS, mock_io)
+        # When
+        reading = sensor.take_reading()
+        # Then
+        self.assertEqual('Err', reading.value)
 
 
 if __name__ == '__main__':

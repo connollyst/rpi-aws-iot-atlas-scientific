@@ -1,37 +1,26 @@
 import unittest
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock
 
 from atlas.AtlasScientific import AtlasScientific
 
 
-class test_main(unittest.TestCase):
+class test_AtlasScientific(unittest.TestCase):
 
     def test_list(self):
         # Given
-        hub = AtlasScientific(i2c=MagicMock())
+        hub = AtlasScientific(io=MagicMock())
         # When
-        hub.list()
+        hub.get_all_sensors()
         # Then
-        hub._i2c.list.assert_called()
+        hub._io.list_sensors.assert_called()
 
-    def test_read_calls_list(self):
+    def test_close(self):
         # Given
-        hub = AtlasScientific(i2c=MagicMock())
+        hub = AtlasScientific(io=MagicMock())
         # When
-        hub.read()
+        hub.close()
         # Then
-        hub._i2c.list.assert_called()
-
-    def test_read_calls_list2(self):
-        # Given
-        mock_i2c = MagicMock()
-        mock_i2c.list = Mock(return_value=[42, 137])
-        hub = AtlasScientific(i2c=mock_i2c)
-
-        # When
-        hub.list()
-        # Then
-        hub._i2c.list.assert_called()
+        hub._io.close.assert_called()
 
 
 if __name__ == '__main__':
