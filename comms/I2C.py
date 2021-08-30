@@ -5,7 +5,7 @@ import io
 import sys
 import time
 
-from src.main.comms.IO import IO
+from comms.IO import IO
 
 
 class I2C(IO):

@@ -2,8 +2,8 @@
 
 from uuid import uuid4
 
-from src.main.atlas.AtlasScientific import AtlasScientific
-from src.main.aws.AwsIotCore import AwsIotCore
+from atlas.AtlasScientific import AtlasScientific
+from aws.AwsIotCore import AwsIotCore
 
 AWS_ENDPOINT = 'a12dev37b8fhwi-ats.iot.us-west-2.amazonaws.com'
 
@@ -12,7 +12,7 @@ def main():
     atlas = AtlasScientific()
     sensors = atlas.get_all_sensors()
     writer = AwsIotCore(AWS_ENDPOINT)
-    writer.connect("test-" + str(uuid4()))
+    writer.connect("tests-" + str(uuid4()))
     for sensor in sensors:
         # TODO relies on take_reading side effect
         json = sensor.to_json()

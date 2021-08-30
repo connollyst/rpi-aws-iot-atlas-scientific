@@ -2,8 +2,8 @@
 
 import json
 
-from src.main.atlas.AtlasScientificSensorReading import AtlasScientificSensorReading
-from src.main.comms.IO import IO
+from atlas.AtlasScientificSensorReading import AtlasScientificSensorReading
+from comms.IO import IO
 
 
 class AtlasScientificSensor:

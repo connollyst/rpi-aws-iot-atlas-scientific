@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-from src.main.atlas.comms.AtlasScientificI2C import AtlasScientificI2C
-from src.main.atlas.comms.AtlasScientificIO import AtlasScientificIO
+from atlas.comms.AtlasScientificI2C import AtlasScientificI2C
+from atlas.comms.AtlasScientificIO import AtlasScientificIO
 
 
 class AtlasScientific:
