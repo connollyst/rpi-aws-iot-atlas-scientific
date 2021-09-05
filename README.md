@@ -56,3 +56,20 @@ https://docs.aws.amazon.com/iot/latest/developerguide/connecting-to-existing-dev
 
 https://docs.aws.amazon.com/iot/latest/developerguide/iot-moisture-raspi-setup.html
 
+# Docker
+
+## Build & Push the Docker Image
+
+- `> docker build -t connollyst/iot .`
+- `> docker run connollyst/iot`
+- `> docker push connollyst/iot`
+
+## Install & Pull the Docker Image on Raspberry Pi
+
+- `> sudo apt-get update`
+- `> sudo apt-get upgrade`
+- `> curl -fsSL https://get.docker.com -o get-docker.sh`
+- `> sudo sh get-docker.sh`
+- `> sudo docker login`
+- `> sudo docker pull connollyst/iot:latest`
+- `> sudo docker run connollyst/iot`
