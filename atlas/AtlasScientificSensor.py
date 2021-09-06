@@ -65,10 +65,11 @@ class AtlasScientificSensor:
         # TODO I don't like this side affect
         reading = self.take_reading()
         message = {
-            'address': self.address,
             'name': self.name,
             'module': self.module,
             'version': self.version,
+            'address': self.address,
+            'addressType': 'I2C',
             'reading': {
                 'value': reading.value,
                 'timestamp': reading.timestamp
