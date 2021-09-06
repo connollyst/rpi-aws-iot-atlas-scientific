@@ -68,6 +68,7 @@ https://docs.aws.amazon.com/iot/latest/developerguide/iot-moisture-raspi-setup.h
 
 - `> sudo apt-get update`
 - `> sudo apt-get upgrade`
+- `> sudo reboot`
 - `> curl -fsSL https://get.docker.com -o get-docker.sh`
 - `> sudo sh get-docker.sh`
 - `> sudo docker login`
