@@ -1,4 +1,4 @@
-# fp-iot-atlas-i2c
+# AWS IoT: Raspberry Pi Atlas Scientific Integration
 
 ## Installation
 
