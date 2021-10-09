@@ -11,8 +11,14 @@ RUN sudo apt-get update && \
 COPY requirements.txt /
 RUN python3 -m pip install -r requirements.txt
 
-COPY atlas/ /atlas/
-COPY aws/ /aws/
-COPY comms/ /comms/
-COPY main.py /
-CMD [ "python", "./main.py" ]
+
+COPY src/main/python/*.py /
+COPY src/main/python/app/*.py /app/
+COPY src/main/python/app/atlas/*.py /app/atlas/
+COPY src/main/python/app/atlas/comms/*.py /app/atlas/comms
+COPY src/main/python/app/aws/*.py /app/aws/
+COPY src/main/python/app/comms/*.py /app/comms/
+COPY src/main/python/app/rpi/*.py /app/rpi/
+COPY certs/ /certs/
+
+CMD [ "python3", "./main.py" ]

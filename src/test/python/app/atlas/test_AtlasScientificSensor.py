@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import ANY
 from unittest.mock import MagicMock, Mock
 
-from atlas.AtlasScientificSensor import AtlasScientificSensor
+from src.main.python.app.atlas.AtlasScientificSensor import AtlasScientificSensor
 
 
 class TestAtlasScientificSensor(unittest.TestCase):

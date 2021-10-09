@@ -1,8 +1,6 @@
-#!/usr/bin/python
-
-from atlas.AtlasScientificSensor import AtlasScientificSensor
-from atlas.comms.AtlasScientificIO import AtlasScientificIO
-from comms.I2C import I2C
+from .AtlasScientificIO import AtlasScientificIO
+from ..AtlasScientificSensor import AtlasScientificSensor
+from ...comms.I2C import I2C
 
 
 class AtlasScientificI2C(AtlasScientificIO):

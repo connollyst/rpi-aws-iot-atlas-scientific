@@ -1,1 +1,6 @@
+# AWS Dependencies
 awsiotsdk==1.7.1
+# Raspberry Pi Dependencies
+smbus
+getmac
+fake_rpi

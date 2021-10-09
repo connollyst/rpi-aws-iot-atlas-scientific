@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-from atlas.AtlasScientific import AtlasScientific
+from src.main.python.app.atlas.AtlasScientific import AtlasScientific
 
 
 class test_AtlasScientific(unittest.TestCase):

@@ -1,9 +1,7 @@
-#!/usr/bin/python
-
 import json
 
-from atlas.AtlasScientificSensorReading import AtlasScientificSensorReading
-from comms.IO import IO
+from .AtlasScientificSensorReading import AtlasScientificSensorReading
+from ..comms.IO import IO
 
 
 class AtlasScientificSensor:

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import time
 
 from awscrt import io, mqtt
@@ -10,9 +8,11 @@ class AwsIotCore:
 
     def __init__(self,
                  endpoint,
-                 cert_filepath='/home/pi/aws/certs/device.pem.crt',
-                 ca_filepath='/home/pi/aws/certs/Amazon-root-CA-1.pem',
-                 private_key_filepath='/home/pi/aws/certs/private.pem.key'):
+                 cert_filepath='certs/device.pem.crt',
+                 ca_filepath='certs/Amazon-root-CA-1.pem',
+                 private_key_filepath='certs/private.pem.key',
+                 logger=None):
+        self._logger = logger
         self._endpoint = endpoint
         self._cert_filepath = cert_filepath
         self._ca_filepath = ca_filepath
@@ -46,21 +46,22 @@ class AwsIotCore:
             pri_key_filepath=self.private_key_filepath,
             ca_filepath=self.ca_filepath,
             client_id=client_id,
-            clean_session=False,
+            clean_session=True,
             keep_alive_secs=30,
         )
-        print("Connecting to {} with client ID '{}'...".format(self.endpoint, client_id))
+        self._logger.info("Connecting to {} with client ID '{}'...".format(self.endpoint, client_id))
         connect_future = mqtt_connection.connect()
         connect_future.result()
         self._connection = mqtt_connection
-        print("Connected!")
+        self._logger.debug("Connected to AWS.")
 
-    def write(self, json):
-        self._connection.publish(topic='iot/devices/readings', payload=json.replace(r'\u0000', ''), qos=mqtt.QoS.AT_LEAST_ONCE)
+    def write(self, topic, json):
+        self._logger.info("Sending to '{}': {}".format(topic, json))
+        self._connection.publish(topic=topic, payload=json, qos=mqtt.QoS.AT_LEAST_ONCE)
         time.sleep(1)
 
     def disconnect(self):
-        print("Disconnecting from AWS...")
+        self._logger.debug("Disconnecting from AWS...")
         disconnect_future = self._connection.disconnect()
         disconnect_future.result()
-        print("Disconnected from AWS.")
+        self._logger.debug("Disconnected from AWS.")
