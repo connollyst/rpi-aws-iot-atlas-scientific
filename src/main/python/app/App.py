@@ -11,7 +11,7 @@ class App:
     AWS_IOT_MQTT_TOPIC = 'iot/devices/readings'
     AWS_CLIENT_ID = "iot-atlas-" + str(uuid4())
 
-    MIN_DELAY = 0.5
+    MIN_DELAY = 5  # 0.5
     MAX_DELAY = 30
     MAX_VARIANCE = 0.1
 
