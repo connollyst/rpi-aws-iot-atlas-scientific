@@ -1,14 +1,15 @@
-FROM balenalib/raspberry-pi-debian-python:latest
+FROM balenalib/raspberry-pi-debian:bullseye-build-20210912
 
-RUN apt-get update
-RUN apt-get install gcc
-RUN apt-get install make
-RUN apt-get install cmake
-RUN apt-get install libssl-dev
+MAINTAINER Sean Connolly <connolly.st@gmail.com>
 
+RUN sudo apt-get update && \
+    sudo apt-get install -y \
+    python3-pip \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /
-RUN pip install -r requirements.txt
+RUN python3 -m pip install -r requirements.txt
 
 COPY atlas/ /atlas/
 COPY aws/ /aws/
