@@ -39,8 +39,7 @@ class App:
 
     def _publish(self, sensor):
         self._writer.connect(self.AWS_CLIENT_ID)
-        self._writer.write(self.AWS_IOT_MQTT_TOPIC,
-                           json.dumps(sensor.to_json().replace(r'\u0000', ''), indent=4, default=str))
+        self._writer.write(self.AWS_IOT_MQTT_TOPIC, json.dumps(sensor.to_json(), indent=4, default=str))
         self._writer.disconnect()
         self._last_publication = time.time()
 
