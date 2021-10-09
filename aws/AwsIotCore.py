@@ -56,7 +56,7 @@ class AwsIotCore:
         print("Connected!")
 
     def write(self, json):
-        self._connection.publish(topic='atlas', payload=json.replace(r'\u0000', ''), qos=mqtt.QoS.AT_LEAST_ONCE)
+        self._connection.publish(topic='iot/devices/readings', payload=json.replace(r'\u0000', ''), qos=mqtt.QoS.AT_LEAST_ONCE)
         time.sleep(1)
 
     def disconnect(self):
