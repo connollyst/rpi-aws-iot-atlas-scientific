@@ -21,7 +21,9 @@ network={
 ```
 
 ### Set Up Tentacle Shield:
+
 Based on `pi_sample_code.pdf`
+
 - `> sudo raspi-config` > Advanced Options > Expand Filesystem > Finish
 - `> sudo apt-get update`
 - `> sudo apt-get upgrade`
@@ -33,10 +35,12 @@ Based on `pi_sample_code.pdf`
 - `> sudo apt install git`
 - `> git clone https://github.com/AtlasScientific/Raspberry-Pi-sample-code.git`
 - `> sudo python Raspberry-Pi-sample-code/i2c.py > Poll`
-		
+
 ### Set up AWS IoT:
+
 https://docs.aws.amazon.com/iot/latest/developerguide/interactive-demo.html
 https://docs.aws.amazon.com/iot/latest/developerguide/connecting-to-existing-device.html
+
 - `> sudo apt-get update`
 - `> sudo apt-get upgrade`
 - `> sudo apt-get install cmake`
@@ -58,16 +62,26 @@ https://docs.aws.amazon.com/iot/latest/developerguide/iot-moisture-raspi-setup.h
 
 # Docker
 
-## Build & Push the Docker Image
-
-- `> docker build -t connollyst/iot .`
-- `> docker run connollyst/iot`
-- `> docker push connollyst/iot`
-
-## Install & Pull the Docker Image on Raspberry Pi
+## Install Docker on Raspberry Pi
 
 - `> sudo apt-get update && sudo apt-get upgrade && sudo reboot`
 - `> curl -sSL https://get.docker.com | sh`
-- `> sudo docker login`
-- `> sudo docker pull connollyst/iot:latest`
-- `> sudo docker run connollyst/iot`
+- `> sudo groupadd docker`
+- `> sudo usermod -aG docker ${USER}`
+
+## Build & Push the Docker Image
+
+- `> docker build -t connollyst/rpi-aws-iot-tentacle . && docker run connollyst/rpi-aws-iot-tentacle`
+- `> docker build -t connollyst/rpi-aws-iot-tentacle . && docker push connollyst/rpi-aws-iot-tentacle`
+
+- `> docker build -t connollyst/rpi-aws-iot-tentacle:latest -t connollyst/rpi-aws-iot-tentacle:v1.2.3 .`
+- `> docker push connollyst/rpi-aws-iot-tentacle:latest && docker push connollyst/rpi-aws-iot-tentacle:v1.2.3`
+
+## Pull the Docker Image
+
+- `> docker pull connollyst/rpi-aws-iot-tentacle:latest`
+- `> docker run --restart=on-failure --privileged connollyst/rpi-aws-iot-tentacle:v1.2.3 &`
+- `> docker run --device /dev/gpiomem connollyst/rpi-aws-iot-tentacle`
+- `> docker run --device /dev/i2c-0 --device /dev/i2c-1 connollyst/rpi-aws-iot-tentacle`
+  - Doesn't work: `"/dev/i2c-0": no such file or directory`
+  - Try I2C detection instead?
