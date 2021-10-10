@@ -1,6 +1,6 @@
 class AtlasScientificIO:
 
-    def list_sensors(self):
+    def find_devices(self):
         pass
 
     def close(self):

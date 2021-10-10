@@ -1,3 +1,6 @@
+import time
+from collections import deque
+
 from .AtlasScientificSensorReading import AtlasScientificSensorReading
 from ..comms.IO import IO
 
@@ -12,13 +15,22 @@ class AtlasScientificSensor:
     INFO_COMMAND = 'I'
     READ_COMMAND = 'R'
 
-    def __init__(self, address, io: IO):
+    SAMPLE_COUNT = 10
+
+    def __init__(self, address, io: IO, host=None, logger=None):
+        if not host:
+            raise RuntimeError("host required")
+        self._host = host
+        if not logger:
+            raise RuntimeError("logger required")
+        self._logger = logger
         self._address = address
         self._io = io
+        # TODO retry if there are errors
         name = self._io.send_and_receive(address, self.NAME_COMMAND, self.SHORT_TIMEOUT)
-        print('> {}: {}'.format(self.NAME_COMMAND, name))
         info = self._io.send_and_receive(address, self.INFO_COMMAND, self.SHORT_TIMEOUT)
-        print('> {}     : {}'.format(self.INFO_COMMAND, info))
+        logger.debug('> {}: {}'.format(self.NAME_COMMAND, name))
+        logger.debug('> {}     : {}'.format(self.INFO_COMMAND, info))
         try:
             self._name = name.split(",")[1]
         except IndexError:
@@ -34,6 +46,10 @@ class AtlasScientificSensor:
         except IndexError:
             # TODO do better than this!
             self._version = 'Err'
+        self._reading = None
+        self._readings = deque()
+        self._variance = {}
+        self._last_write = 0
 
     @property
     def address(self):
@@ -51,24 +67,37 @@ class AtlasScientificSensor:
     def version(self):
         return self._version
 
-    def take_reading(self) -> AtlasScientificSensorReading:
-        # TODO store reading
-        # TODO support multiple readings
-        return AtlasScientificSensorReading(
+    def read(self) -> AtlasScientificSensorReading:
+        self._reading = AtlasScientificSensorReading(
             self._io.send_and_receive(self.address, self.READ_COMMAND, self.LONG_TIMEOUT))
+        self._logger.debug("Atlas Scientific Device #{}: {}".format(self._address, self._value))
+        self._readings.append(self._reading)
+        if len(self._readings) > self.SAMPLE_COUNT:
+            self._readings.popleft()
+        return self._reading
+
+    def variance(self):
+        self._logger.info('TODO calculating reading variance..')
+        # TODO these aren't numeric, huh?
+        return 0
+
+    def secs_since_last_write(self):
+        return time.time() - self._last_write
 
     def to_json(self):
-        # TODO I don't like this side affect
-        reading = self.take_reading()
+        if not self._reading:
+            raise RuntimeError("no reading taken")
+        self._last_write = time.time()
         return {
             'name': self.name,
             'module': self.module,
             'version': self.version,
             'address': self.address,
+            "host": self._host.identifier,
             'addressType': 'I2C',
             'reading': {
-                'value': reading.value,
-                'timestamp': reading.timestamp
+                'value': self._reading.value,
+                'timestamp': self._reading.timestamp
             }
         }
 
