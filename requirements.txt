@@ -5,6 +5,3 @@ awsiotsdk==1.7.1
 # Raspberry Pi Dependencies
 smbus
 getmac
-# Testing Dependencies
-pytest
-fake_rpi

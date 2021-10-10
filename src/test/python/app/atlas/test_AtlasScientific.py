@@ -1,17 +1,10 @@
-import sys
 import unittest
 from unittest.mock import MagicMock
-
-import fake_rpi
 
 from src.main.python.app.Logger import get_logger
 from src.main.python.app.atlas.AtlasScientific import AtlasScientific
 
 logger = get_logger('unittest')
-
-sys.modules['RPi'] = fake_rpi.RPi  # Fake RPi
-sys.modules['RPi.GPIO'] = fake_rpi.RPi.GPIO  # Fake GPIO
-sys.modules['smbus'] = fake_rpi.smbus  # Fake smbus (I2C)
 
 
 class test_AtlasScientific(unittest.TestCase):
