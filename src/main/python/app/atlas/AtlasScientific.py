@@ -41,6 +41,6 @@ class AtlasScientific:
     def stop(self):
         self._logger.info('Stopping Atlas Scientific Tentacle Shield reader..')
         self._running = False
-        self._thread.join()
-        # TODO correct order here?
+        if self._thread:
+            self._thread.join()
         self._io.close()

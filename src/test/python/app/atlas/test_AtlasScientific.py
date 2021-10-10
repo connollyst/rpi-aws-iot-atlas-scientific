@@ -1,33 +1,37 @@
+import sys
 import unittest
 from unittest.mock import MagicMock
+
+import fake_rpi
 
 from src.main.python.app.Logger import get_logger
 from src.main.python.app.atlas.AtlasScientific import AtlasScientific
 
+logger = get_logger('unittest')
+
+sys.modules['RPi'] = fake_rpi.RPi  # Fake RPi
+sys.modules['RPi.GPIO'] = fake_rpi.RPi.GPIO  # Fake GPIO
+sys.modules['smbus'] = fake_rpi.smbus  # Fake smbus (I2C)
+
 
 class test_AtlasScientific(unittest.TestCase):
 
-    def test_should_initialize_I2C(self):
+    def test_should_find_devices_on_init(self):
         # Given
-        logger = get_logger(__name__)
-        print(logger)
-        hub = AtlasScientific(host=MagicMock(), logger=logger)
-
-    def test_list(self):
-        # Given
-        hub = AtlasScientific(io=MagicMock())
+        io = MagicMock()
         # When
-        hub.get_all_sensors()
+        AtlasScientific(io=io, host=MagicMock(), logger=logger)
         # Then
-        hub._io.list_sensors.assert_called()
+        io.find_devices.assert_called()
 
-    def test_close(self):
+    def test_close_devices_on_stop(self):
         # Given
-        hub = AtlasScientific(io=MagicMock())
+        io = MagicMock()
+        tentacle = AtlasScientific(io=io, host=MagicMock(), logger=logger)
         # When
-        hub.close()
+        tentacle.stop()
         # Then
-        hub._io.close.assert_called()
+        io.close.assert_called()
 
 
 if __name__ == '__main__':

@@ -26,32 +26,13 @@ class AtlasScientificSensor:
         self._logger = logger
         self._address = address
         self._io = io
-        # TODO retry if there are errors
         name = self._io.send_and_receive(address, self.NAME_COMMAND, self.SHORT_TIMEOUT)
         info = self._io.send_and_receive(address, self.INFO_COMMAND, self.SHORT_TIMEOUT)
         logger.debug('> {}: {}'.format(self.NAME_COMMAND, name))
         logger.debug('> {}     : {}'.format(self.INFO_COMMAND, info))
-        try:
-            self._name = name.split(",")[1]
-        except IndexError:
-            # TODO try again!
-            raise RuntimeError(
-                'Device at address {} failed to respond to "{}": {}'.format(self.address, self.NAME_COMMAND, name)
-            )
-        try:
-            self._module = info.split(",")[1]
-        except IndexError:
-            # TODO try again!
-            raise RuntimeError(
-                'Device at address {} failed to respond to "{}": {}'.format(self.address, self.INFO_COMMAND, info)
-            )
-        try:
-            self._version = info.split(",")[2]
-        except IndexError:
-            # TODO try again!
-            raise RuntimeError(
-                'Device at address {} failed to respond to "{}": {}'.format(self.address, self.INFO_COMMAND, info)
-            )
+        self._name = name.split(",")[1]
+        self._module = info.split(",")[1]
+        self._version = info.split(",")[2]
         self._reading = None
         self._readings = deque()
         self._variance = {}
