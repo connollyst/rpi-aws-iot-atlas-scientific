@@ -70,7 +70,7 @@ class AtlasScientificSensor:
     def read(self) -> AtlasScientificSensorReading:
         self._reading = AtlasScientificSensorReading(
             self._io.send_and_receive(self.address, self.READ_COMMAND, self.LONG_TIMEOUT))
-        self._logger.debug("Atlas Scientific Device #{}: {}".format(self._address, self._value))
+        self._logger.debug("Atlas Scientific Device #{}: {}".format(self._address, self._reading))
         self._readings.append(self._reading)
         if len(self._readings) > self.SAMPLE_COUNT:
             self._readings.popleft()

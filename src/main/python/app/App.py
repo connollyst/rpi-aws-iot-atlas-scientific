@@ -17,6 +17,8 @@ class App:
     MAX_VARIANCE = 0.1
 
     def __init__(self, logger, tentacle=None, aws=None):
+        if not logger:
+            raise RuntimeError('logger required')
         self._logger = logger
         self._tentacle = tentacle or AtlasScientific(host=Host(), logger=self._logger)
         self._writer = aws or AwsIotCore(endpoint=self.AWS_ENDPOINT, logger=self._logger)
@@ -29,10 +31,18 @@ class App:
             try:
                 for device in self._tentacle.devices:
                     if device.variance() >= self.MAX_VARIANCE:
-                        self._logger.info("Publishing due to high variance: {}".format(device.variance()))
+                        self._logger.info(
+                            "Publishing device {} due to high variance: {}".format(
+                                device.address, device.variance()
+                            )
+                        )
                         self._publish(device)
                     elif device.secs_since_last_write() >= self.MAX_DELAY:
-                        self._logger.info("Publishing due to delay: {}s".format(device.secs_since_last_write()))
+                        self._logger.info(
+                            "Publishing device {} due to delay: {}s".format(
+                                device.address, device.secs_since_last_write()
+                            )
+                        )
                         self._publish(device)
                 time.sleep(self.MIN_DELAY)
             except KeyboardInterrupt:

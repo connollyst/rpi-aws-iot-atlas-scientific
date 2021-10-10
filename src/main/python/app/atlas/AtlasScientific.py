@@ -11,9 +11,11 @@ class AtlasScientific:
     SAMPLE_FREQUENCY = 0.5
 
     def __init__(self, io: AtlasScientificIO = None, host: Host = None, logger=None):
+        if not logger:
+            raise RuntimeError('logger required')
         self._logger = logger
         # TODO always default to I2C?
-        self._io = io or AtlasScientificI2C(host, logger)
+        self._io = io or AtlasScientificI2C(host=host, logger=logger)
         self._running = False
         self._thread = None
         self._devices = self._io.find_devices()
