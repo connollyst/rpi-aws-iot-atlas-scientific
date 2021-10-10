@@ -8,9 +8,10 @@ RUN sudo apt-get update && \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
+ENV LOG_LEVEL=Info
+
 COPY requirements.txt /
 RUN python3 -m pip install -r requirements.txt
-
 
 COPY src/main/python/*.py /
 COPY src/main/python/app/*.py /app/
