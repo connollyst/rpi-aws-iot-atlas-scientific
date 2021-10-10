@@ -18,7 +18,10 @@ class AtlasScientific:
         self._io = io or AtlasScientificI2C(host=host, logger=logger)
         self._running = False
         self._thread = None
-        self._devices = self._io.find_devices()
+        try:
+            self._devices = self._io.find_devices()
+        except (IOError, OSError) as e:
+            raise IOError('Failed to initialize Atlas Scientific sensors.') from e
 
     @property
     def devices(self):

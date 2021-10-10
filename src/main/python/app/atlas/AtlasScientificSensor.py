@@ -34,18 +34,24 @@ class AtlasScientificSensor:
         try:
             self._name = name.split(",")[1]
         except IndexError:
-            # TODO do better than this!
-            self._name = 'Err'
+            # TODO try again!
+            raise RuntimeError(
+                'Device at address {} failed to respond to "{}": {}'.format(self.address, self.NAME_COMMAND, name)
+            )
         try:
             self._module = info.split(",")[1]
         except IndexError:
-            # TODO do better than this!
-            self._module = info
+            # TODO try again!
+            raise RuntimeError(
+                'Device at address {} failed to respond to "{}": {}'.format(self.address, self.INFO_COMMAND, info)
+            )
         try:
             self._version = info.split(",")[2]
         except IndexError:
-            # TODO do better than this!
-            self._version = 'Err'
+            # TODO try again!
+            raise RuntimeError(
+                'Device at address {} failed to respond to "{}": {}'.format(self.address, self.INFO_COMMAND, info)
+            )
         self._reading = None
         self._readings = deque()
         self._variance = {}

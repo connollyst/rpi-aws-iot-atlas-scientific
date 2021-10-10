@@ -3,7 +3,10 @@ import io
 import sys
 import time
 
+from retry import retry
+
 from .IO import IO
+from .. import Logger
 
 
 class I2C(IO):
@@ -28,6 +31,7 @@ class I2C(IO):
         self.file_read.close()
         self.file_write.close()
 
+    @retry(exceptions=IOError, tries=10, delay=0.5, backoff=1.25, logger=Logger.get_logger('retry'))
     def send_and_receive(self, address, message, wait=0):
         """
         Write a command, wait the appropriate timeout, & read the response.
@@ -37,13 +41,11 @@ class I2C(IO):
         time.sleep(wait)
         response, success = self.__read()
         if not success:
-            print('Retrying..')
-            # TODO smarter retries please
-            time.sleep(wait)
-            response, success = self.__read()
-            if not success:
-                response = 'Err'
-                # raise IOError('Failed to receive I2C response at address {} with command {}!'.format(address, message))
+            raise IOError(
+                'Failed to receive a valid I2C response at address {} with command "{}": "{}"'.format(
+                    address, message, response
+                )
+            )
         return response
 
     def send(self, address, message):

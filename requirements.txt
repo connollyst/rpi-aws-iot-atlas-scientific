@@ -1,3 +1,5 @@
+# Python Dependencies
+retry
 # AWS Dependencies
 awsiotsdk==1.7.1
 # Raspberry Pi Dependencies
