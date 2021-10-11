@@ -9,6 +9,7 @@ phases:
       - python -m xmlrunner discover -s src/test/python -o target/reports
 
 reports:
-  files:
-    - '**/*'
-  base-directory: target/reports
+  junit:
+    files:
+      - '**/*'
+    base-directory: target/reports
