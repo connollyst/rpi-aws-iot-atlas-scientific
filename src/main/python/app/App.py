@@ -2,6 +2,8 @@ import json
 import time
 from uuid import uuid4
 
+from awscrt.exceptions import AwsCrtError
+
 from .atlas.AtlasScientific import AtlasScientific
 from .aws.AwsIotCore import AwsIotCore
 from .rpi.Host import Host
@@ -51,7 +53,10 @@ class App:
                 self._tentacle.stop()
 
     def _publish(self, device):
-        self._writer.connect(self.AWS_CLIENT_ID)
-        self._writer.write(self.AWS_IOT_MQTT_TOPIC,
-                           json.dumps(device.to_json(), indent=4, default=str).replace(r'\u0000', ''))
-        self._writer.disconnect()
+        try:
+            self._writer.connect(self.AWS_CLIENT_ID)
+            self._writer.write(self.AWS_IOT_MQTT_TOPIC,
+                               json.dumps(device.to_json(), indent=4, default=str).replace(r'\u0000', ''))
+            self._writer.disconnect()
+        except AwsCrtError as e:
+            self._logger.error("Failed to publish to AWS: {}".format(e.message))
