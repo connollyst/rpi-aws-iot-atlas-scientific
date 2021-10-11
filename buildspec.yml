@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - pip install -r requirements.txt
+  build:
+    commands:
+      - python -m xmlrunner discover -s src/test/python -o target/reports
+
+reports:
+  files:
+    - '**/*'
+  base-directory: target/reports

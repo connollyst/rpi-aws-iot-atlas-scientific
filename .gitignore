@@ -1,5 +1,8 @@
 /certs
 
+# Build
+target/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
